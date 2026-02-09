@@ -10,15 +10,19 @@
     <header class="header">
         <div class="brand">User Setup</div>
         <nav class="nav">
-            <a href="/dashboard">대시보드</a>
-            <a href="/supports">문의 관리</a>
-            <a href="/users">사용자 관리</a>
+            <a class="button secondary" href="/dashboard">대시보드</a>
+            <a class="button secondary" href="/supports">문의 관리</a>
+            <a class="button secondary" href="/users">사용자 관리</a>
+            <form action="/logout" method="post" style="display:inline;">
+                <button class="button secondary" type="submit">로그아웃</button>
+            </form>
         </nav>
     </header>
 
     <main class="container">
         <section class="card">
             <div class="section-title" th:text="${user.id == null} ? '사용자 등록' : '사용자 수정'"></div>
+            <p class="alert error" th:if="${error}" th:text="${error}"></p>
             <form class="form-grid" th:action="${user.id == null} ? @{/users} : @{/users/{id}(id=${user.id})}" method="post">
                 <div class="field">
                     <label>이름</label>
@@ -27,6 +31,17 @@
                 <div class="field">
                     <label>이메일</label>
                     <input type="email" name="email" th:value="${user.email}" required />
+                </div>
+                <div class="field">
+                    <label>역할</label>
+                    <select name="role" required>
+                        <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"
+                                th:selected="${(user.role == r) or (user.role == null and r.name() == 'MANAGER')}"></option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>비밀번호</label>
+                    <input type="password" name="password" th:placeholder="${user.id == null} ? '초기 비밀번호' : '변경 시에만 입력'" th:required="${user.id == null}" />
                 </div>
                 <div class="actions">
                     <button class="button" type="submit">저장</button>

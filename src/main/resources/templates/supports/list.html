@@ -10,9 +10,12 @@
     <header class="header">
         <div class="brand">Support Desk</div>
         <nav class="nav">
-            <a href="/dashboard">대시보드</a>
-            <a href="/supports">문의 관리</a>
-            <a href="/users">담당자 관리</a>
+            <a class="button secondary" href="/dashboard">대시보드</a>
+            <a class="button secondary" href="/supports">문의 관리</a>
+            <a class="button secondary" href="/users" th:if="${isAdmin}">담당자 관리</a>
+            <form action="/logout" method="post" style="display:inline;">
+                <button class="button secondary" type="submit">로그아웃</button>
+            </form>
         </nav>
     </header>
 
@@ -43,18 +46,28 @@
                 </div>
                 <div class="field">
                     <label>문의 유형</label>
-                    <input type="text" name="inquiryType" th:value="${inquiryType}" placeholder="예: 로그인/결제" />
+                    <select name="inquiryType">
+                        <option value="" th:selected="${inquiryType == null}">전체</option>
+                        <option th:each="t : ${inquiryTypes}" th:value="${t}" th:text="${t}" th:selected="${inquiryType == t}"></option>
+                    </select>
                 </div>
                 <div class="field">
                     <label>카테고리</label>
-                    <input type="text" name="category" th:value="${category}" placeholder="예: 계정/결제" />
+                    <select name="category">
+                        <option value="" th:selected="${category == null}">전체</option>
+                        <option th:each="c : ${categories}" th:value="${c}" th:text="${c}" th:selected="${category == c}"></option>
+                    </select>
                 </div>
-                <div class="field">
+                <div class="field" th:if="${isAdmin}">
                     <label>담당자</label>
                     <select name="userId">
                         <option value="" th:selected="${userId == null}">전체</option>
                         <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.name + ' (' + u.email + ')'}" th:selected="${userId != null and userId == u.id}"></option>
                     </select>
+                </div>
+                <div class="field" th:if="${!isAdmin}">
+                    <label>담당자</label>
+                    <input type="text" th:value="${currentUser != null ? currentUser.name + ' (' + currentUser.email + ')' : '-'}" readonly />
                 </div>
                 <div class="field">
                     <label>시작일</label>
@@ -82,8 +95,7 @@
             </div>
 
             <div class="filter-summary"
-                 th:if="${status != null or userId != null or fromDate != null or toDate != null}"
-                 th:with="selectedUser=${userId != null ? users.?[id == userId][0] : null}">
+                 th:if="${status != null or userId != null or fromDate != null or toDate != null}">
                 <a class="tag" th:if="${status != null}"
                    data-tooltip="클릭 시 해제"
                    th:href="@{/supports(userId=${userId}, inquiryType=${inquiryType}, category=${category}, fromDate=${fromDate}, toDate=${toDate}, cleared=true)}">
@@ -134,7 +146,7 @@
                     <td th:text="${item.inquiryType != null ? item.inquiryType : '-'}"></td>
                     <td th:text="${item.category != null ? item.category : '-'}"></td>
                     <td th:text="${item.priority != null ? item.priority : '-'}"></td>
-                    <td th:text="${item.createdAt}"></td>
+                    <td th:text="${item.createdAt != null ? #temporals.format(item.createdAt, 'yyyy-MM-dd HH:mm') : '-'}"></td>
                     <td>
                         <div class="inline">
                             <form th:action="@{/supports/{id}/status(id=${item.id})}" method="post">

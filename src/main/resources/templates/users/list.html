@@ -10,9 +10,12 @@
     <header class="header">
         <div class="brand">User Directory</div>
         <nav class="nav">
-            <a href="/dashboard">대시보드</a>
-            <a href="/supports">문의 관리</a>
-            <a href="/users">사용자 관리</a>
+            <a class="button secondary" href="/dashboard">대시보드</a>
+            <a class="button secondary" href="/supports">문의 관리</a>
+            <a class="button secondary" href="/users">사용자 관리</a>
+            <form action="/logout" method="post" style="display:inline;">
+                <button class="button secondary" type="submit">로그아웃</button>
+            </form>
         </nav>
     </header>
 
@@ -33,6 +36,7 @@
                     <th>ID</th>
                     <th>이름</th>
                     <th>이메일</th>
+                    <th>역할</th>
                     <th>알림</th>
                     <th>관리</th>
                 </tr>
@@ -42,6 +46,7 @@
                     <td th:text="${u.id}"></td>
                     <td th:text="${u.name}"></td>
                     <td th:text="${u.email}"></td>
+                    <td th:text="${u.role}"></td>
                     <td><a th:href="@{/notifications(userId=${u.id})}">알림 보기</a></td>
                     <td class="inline">
                         <a class="button secondary" th:href="@{/users/{id}/edit(id=${u.id})}">수정</a>

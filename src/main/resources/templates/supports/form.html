@@ -10,15 +10,19 @@
     <header class="header">
         <div class="brand">Request Builder</div>
         <nav class="nav">
-            <a href="/dashboard">대시보드</a>
-            <a href="/supports">문의 관리</a>
-            <a href="/users">담당자 관리</a>
+            <a class="button secondary" href="/dashboard">대시보드</a>
+            <a class="button secondary" href="/supports">문의 관리</a>
+            <a class="button secondary" href="/users" th:if="${isAdmin}">담당자 관리</a>
+            <form action="/logout" method="post" style="display:inline;">
+                <button class="button secondary" type="submit">로그아웃</button>
+            </form>
         </nav>
     </header>
 
     <main class="container">
         <section class="card">
             <div class="section-title" th:text="${ticket.id == null} ? '문의 등록' : '문의 수정'"></div>
+            <p class="alert error" th:if="${error}" th:text="${error}"></p>
             <form class="form-grid" th:action="${ticket.id == null} ? @{/supports} : @{/supports/{id}(id=${ticket.id})}"
                   method="post" enctype="multipart/form-data">
                 <div class="field">
@@ -31,11 +35,17 @@
                 </div>
                 <div class="field">
                     <label>문의 유형</label>
-                    <input type="text" name="inquiryType" th:value="${ticket.inquiryType}" placeholder="예: 로그인/결제/배송" />
+                    <select name="inquiryType">
+                        <option value="" th:selected="${ticket.inquiryType == null}">선택하세요</option>
+                        <option th:each="t : ${inquiryTypes}" th:value="${t}" th:text="${t}" th:selected="${ticket.inquiryType == t}"></option>
+                    </select>
                 </div>
                 <div class="field">
                     <label>카테고리</label>
-                    <input type="text" name="category" th:value="${ticket.category}" placeholder="예: 계정/결제/기술" />
+                    <select name="category">
+                        <option value="" th:selected="${ticket.category == null}">선택하세요</option>
+                        <option th:each="c : ${categories}" th:value="${c}" th:text="${c}" th:selected="${ticket.category == c}"></option>
+                    </select>
                 </div>
                 <div class="field">
                     <label>우선순위</label>
@@ -45,12 +55,12 @@
                 </div>
                 <div class="field">
                     <label>담당자</label>
-                    <select name="user.id" required>
+                    <select name="userId" required>
                         <option value="" disabled th:selected="${ticket.user == null}">선택하세요</option>
                         <option th:each="u : ${users}"
                                 th:value="${u.id}"
                                 th:text="${u.name + ' (' + u.email + ')'}"
-                                th:selected="${ticket.user != null and u.id == ticket.user.id}">
+                                th:selected="${ticket.user != null ? u.id == ticket.user.id : (currentUser != null and u.id == currentUser.id)}">
                         </option>
                     </select>
                 </div>

@@ -50,8 +50,15 @@ app:
   mail:
     enabled: false
     from: no-reply@example.com
+  security:
+    admin-email: taehun0023@gmail.com
+    admin-password: 1234
+    admin-name: 이태훈
+    temp-password: temp1234
 
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
+server:
+  port: 9090

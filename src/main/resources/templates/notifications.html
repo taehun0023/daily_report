@@ -10,16 +10,19 @@
     <header class="header">
         <div class="brand">Notification Feed</div>
         <nav class="nav">
-            <a href="/dashboard">대시보드</a>
-            <a href="/supports">문의 관리</a>
-            <a href="/users">사용자 관리</a>
+            <a class="button secondary" href="/dashboard">대시보드</a>
+            <a class="button secondary" href="/supports">문의 관리</a>
+            <a class="button secondary" href="/users" th:if="${isAdmin}">사용자 관리</a>
+            <form action="/logout" method="post" style="display:inline;">
+                <button class="button secondary" type="submit">로그아웃</button>
+            </form>
         </nav>
     </header>
 
     <main class="container">
         <section class="card">
-            <div class="section-title">알림 목록</div>
-            <p>사용자: <span th:text="${user != null ? user.name + ' (' + user.email + ')' : userId}"></span></p>
+            <div class="section-title" th:text="${isAdmin} ? '알림 목록' : '내 알림'"></div>
+            <p th:if="${isAdmin}">사용자: <span th:text="${user != null ? user.name + ' (' + user.email + ')' : userId}"></span></p>
             <table class="table">
                 <thead>
                 <tr>

@@ -45,6 +45,11 @@ a:hover {
   padding: 20px 36px 0;
 }
 
+.page.auth-page .header {
+  text-align: center;
+  padding: 28px 36px 0;
+}
+
 .brand {
   font-family: "Fraunces", serif;
   font-size: 28px;
@@ -60,11 +65,30 @@ a:hover {
 }
 
 .nav a {
-  padding: 6px 14px;
+  height: 32px;
+  padding: 0 14px;
   border-radius: 999px;
   background: rgba(31, 111, 120, 0.08);
   color: var(--primary-ink);
   font-weight: 600;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav form {
+  display: inline-flex;
+}
+
+.nav form .button {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .container {
@@ -72,6 +96,94 @@ a:hover {
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
+}
+
+.auth {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 36px;
+  min-height: calc(100vh - 80px);
+}
+
+.auth-card {
+  width: min(520px, 92vw);
+  padding: 30px;
+  background: var(--card);
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.auth-header {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.auth-title {
+  font-family: "Fraunces", serif;
+  font-size: 26px;
+  margin: 0;
+}
+
+.auth-subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.form-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.form-stack label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.form-stack input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-family: inherit;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.form-note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.alert {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.alert.error {
+  background: rgba(200, 53, 53, 0.12);
+  border: 1px solid rgba(200, 53, 53, 0.22);
+  color: #8b1f1f;
+}
+
+.alert.info {
+  background: rgba(27, 111, 115, 0.12);
+  border: 1px solid rgba(27, 111, 115, 0.2);
+  color: var(--primary-ink);
 }
 
 .hero {
@@ -276,10 +388,14 @@ a:hover {
   background: rgba(255, 255, 255, 0.7);
   padding: 2px 6px;
   border-radius: 8px;
+  z-index: 2;
 }
 
 .chart-label.top {
   top: 40%;
+  left: auto;
+  right: 12px;
+  transform: translateY(calc(-50% + 22px));
   color: var(--primary-ink);
   background: rgba(27, 111, 115, 0.12);
   border: 1px solid rgba(27, 111, 115, 0.2);

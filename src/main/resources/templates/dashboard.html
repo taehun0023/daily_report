@@ -12,9 +12,12 @@
         <header class="header">
             <div class="brand">Daily Report Console</div>
             <nav class="nav">
-                <a href="/dashboard">대시보드</a>
-                <a href="/supports">문의 관리</a>
-                <a href="/users">담당자 관리</a>
+                <a class="button secondary" href="/dashboard">대시보드</a>
+                <a class="button secondary" href="/supports">문의 관리</a>
+                <a class="button secondary" href="/users" th:if="${isAdmin}">담당자 관리</a>
+                <form action="/logout" method="post" style="display:inline;">
+                    <button class="button secondary" type="submit">로그아웃</button>
+                </form>
             </nav>
         </header>
 
@@ -26,7 +29,7 @@
                     <p>새벽 배치가 전날 처리된 티켓을 집계하고, 아침 알림이 자동으로 발송됩니다.</p>
                     <div class="actions">
                         <a class="button" href="/supports/new">문의 등록</a>
-                        <a class="button secondary" href="/users/new">사용자 등록</a>
+                        <a class="button secondary" href="/users/new" th:if="${isAdmin}">사용자 등록</a>
                     </div>
                 </div>
                 <div class="card">
@@ -42,7 +45,8 @@
                         </div>
                     </div>
                     <div class="actions" style="margin-top: 14px;">
-                        <a class="button secondary" href="/users">알림 확인(담당자 선택)</a>
+                        <a class="button secondary" th:if="${isAdmin}" href="/users">알림 확인(담당자 선택)</a>
+                        <a class="button secondary" th:if="${!isAdmin}" href="/notifications">내 알림 확인</a>
                     </div>
                 </div>
             </section>
@@ -70,13 +74,6 @@
                 </div>
                 <div th:if="${reports != null and reports.size() > 0}" class="chart-lines">
                     <div class="avg-line" th:if="${maxProcessed > 0}" th:style="'top:' + ${avgTop} + '%'"></div>
-                    <span class="chart-label top" th:if="${maxProcessed > 0}" th:style="'top:' + ${avgTop} + '%'">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 12h4l2-4 4 8 2-4h4" />
-                        </svg>
-                        <span><span class="avg-text">평균</span>(<span class="num"
-                                th:text="${avgProcessed}">0</span>건)</span>
-                    </span>
                     <div class="chart">
                         <div class="bar" th:each="report : ${reports}"
                             th:attr="data-tooltip=${report.reportDate + ' · ' + report.processedCount + '건'}"

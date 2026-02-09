@@ -115,6 +115,10 @@ public class SupportTicket {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public LocalDateTime getProcessedAt() {
         return processedAt;
     }

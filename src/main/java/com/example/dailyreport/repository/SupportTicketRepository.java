@@ -21,6 +21,9 @@ public interface SupportTicketRepository extends JpaRepository<SupportTicket, Lo
     Optional<SupportTicket> findById(Long id);
 
     long countByProcessedAtBetween(LocalDateTime start, LocalDateTime end);
+    long countByProcessedAtBetweenAndUserId(LocalDateTime start, LocalDateTime end, Long userId);
+
+    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     List<SupportTicket> findByStatusOrderByCreatedAtDesc(TicketStatus status);
 
