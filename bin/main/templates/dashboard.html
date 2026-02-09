@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>대시보드</title>
+</head>
+<body>
+<h1>대시보드</h1>
+<nav>
+    <a href="/requests">요청 관리</a>
+</nav>
+
+<h3>최근 7일 처리 리포트</h3>
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+    <tr>
+        <th>날짜</th>
+        <th>처리 완료 건수</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="report : ${reports}">
+        <td th:text="${report.reportDate}"></td>
+        <td th:text="${report.processedCount}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<p>알림 확인: <code>/notifications?userEmail=사용자이메일</code></p>
+</body>
+</html>

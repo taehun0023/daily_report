@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>알림 목록</title>
+</head>
+<body>
+<h1>알림 목록</h1>
+<p>사용자: <span th:text="${userEmail}"></span></p>
+<nav>
+    <a href="/dashboard">대시보드</a>
+</nav>
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+    <tr>
+        <th>발송 시간</th>
+        <th>메시지</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="n : ${notifications}">
+        <td th:text="${n.sentAt}"></td>
+        <td th:text="${n.message}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

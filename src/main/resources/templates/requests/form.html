@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>요청 등록/수정</title>
+</head>
+<body>
+<h1 th:text="${requestItem.id == null} ? '요청 등록' : '요청 수정'"></h1>
+<nav>
+    <a href="/requests">목록</a>
+</nav>
+
+<form th:action="${requestItem.id == null} ? @{/requests} : @{/requests/{id}(id=${requestItem.id})}"
+      method="post" enctype="multipart/form-data">
+    <div>
+        <label>제목</label>
+        <input type="text" name="title" th:value="${requestItem.title}" required />
+    </div>
+    <div>
+        <label>내용</label>
+        <textarea name="content" rows="6" cols="60" th:text="${requestItem.content}" required></textarea>
+    </div>
+    <div>
+        <label>사용자 이메일</label>
+        <input type="email" name="userEmail" th:value="${requestItem.userEmail}" required />
+    </div>
+    <div th:if="${requestItem.id == null}">
+        <label>첨부 파일</label>
+        <input type="file" name="files" multiple />
+    </div>
+    <div>
+        <button type="submit">저장</button>
+    </div>
+</form>
+</body>
+</html>
