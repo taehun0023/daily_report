@@ -2,7 +2,7 @@ package com.example.dailyreport.service;
 
 import com.example.dailyreport.domain.DailyReport;
 import com.example.dailyreport.repository.DailyReportRepository;
-import com.example.dailyreport.repository.RequestItemRepository;
+import com.example.dailyreport.repository.SupportTicketRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,18 +12,18 @@ import java.time.LocalDateTime;
 @Service
 public class ReportService {
     private final DailyReportRepository reportRepository;
-    private final RequestItemRepository requestRepository;
+    private final SupportTicketRepository ticketRepository;
 
-    public ReportService(DailyReportRepository reportRepository, RequestItemRepository requestRepository) {
+    public ReportService(DailyReportRepository reportRepository, SupportTicketRepository ticketRepository) {
         this.reportRepository = reportRepository;
-        this.requestRepository = requestRepository;
+        this.ticketRepository = ticketRepository;
     }
 
     @Transactional
     public DailyReport createOrUpdateReport(LocalDate reportDate) {
         LocalDateTime start = reportDate.atStartOfDay();
         LocalDateTime end = reportDate.plusDays(1).atStartOfDay();
-        long count = requestRepository.countByProcessedAtBetween(start, end);
+        long count = ticketRepository.countByProcessedAtBetween(start, end);
 
         DailyReport report = reportRepository.findByReportDate(reportDate).orElseGet(DailyReport::new);
         report.setReportDate(reportDate);

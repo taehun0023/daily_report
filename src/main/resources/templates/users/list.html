@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 목록</title>
+    <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <div class="brand">User Directory</div>
+        <nav class="nav">
+            <a href="/dashboard">대시보드</a>
+            <a href="/supports">문의 관리</a>
+            <a href="/users">사용자 관리</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <div class="inline" style="justify-content: space-between;">
+                <div>
+                    <div class="section-title">사용자 목록</div>
+                    <p>알림을 받을 사용자를 등록하고 관리하세요.</p>
+                </div>
+                <div class="actions">
+                    <a class="button" href="/users/new">사용자 등록</a>
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th>알림</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="u : ${users}">
+                    <td th:text="${u.id}"></td>
+                    <td th:text="${u.name}"></td>
+                    <td th:text="${u.email}"></td>
+                    <td><a th:href="@{/notifications(userId=${u.id})}">알림 보기</a></td>
+                    <td class="inline">
+                        <a class="button secondary" th:href="@{/users/{id}/edit(id=${u.id})}">수정</a>
+                        <form th:action="@{/users/{id}/delete(id=${u.id})}" method="post">
+                            <button class="button" type="submit">삭제</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+</body>
+</html>

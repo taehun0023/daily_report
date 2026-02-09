@@ -1,7 +1,7 @@
 package com.example.dailyreport.domain;
 
-public enum RequestStatus {
-    NEW,
+public enum TicketStatus {
+    RECEIVED,
     IN_PROGRESS,
-    PROCESSED
+    DONE
 }

@@ -10,8 +10,9 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String userEmail;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserAccount user;
 
     @Lob
     @Column(nullable = false)
@@ -34,12 +35,12 @@ public class Notification {
         return id;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public UserAccount getUser() {
+        return user;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setUser(UserAccount user) {
+        this.user = user;
     }
 
     public String getMessage() {

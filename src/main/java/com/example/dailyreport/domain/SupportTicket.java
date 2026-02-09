@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "request_item")
-public class RequestItem {
+@Table(name = "support_ticket")
+public class SupportTicket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,18 +19,29 @@ public class RequestItem {
     @Column(nullable = false)
     private String content;
 
+    @Column(length = 50)
+    private String inquiryType;
+
+    @Column(length = 50)
+    private String category;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RequestStatus status = RequestStatus.NEW;
+    private TicketPriority priority = TicketPriority.MEDIUM;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String userEmail;
+    private TicketStatus status = TicketStatus.RECEIVED;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserAccount user;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime processedAt;
 
-    @OneToMany(mappedBy = "requestItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "supportTicket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RequestFile> files = new ArrayList<>();
 
     @PrePersist
@@ -60,20 +71,44 @@ public class RequestItem {
         this.content = content;
     }
 
-    public RequestStatus getStatus() {
+    public TicketStatus getStatus() {
         return status;
     }
 
-    public void setStatus(RequestStatus status) {
+    public void setStatus(TicketStatus status) {
         this.status = status;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public UserAccount getUser() {
+        return user;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setUser(UserAccount user) {
+        this.user = user;
+    }
+
+    public String getInquiryType() {
+        return inquiryType;
+    }
+
+    public void setInquiryType(String inquiryType) {
+        this.inquiryType = inquiryType;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public TicketPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(TicketPriority priority) {
+        this.priority = priority;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -94,11 +129,11 @@ public class RequestItem {
 
     public void addFile(RequestFile file) {
         files.add(file);
-        file.setRequestItem(this);
+        file.setSupportTicket(this);
     }
 
     public void removeFile(RequestFile file) {
         files.remove(file);
-        file.setRequestItem(null);
+        file.setSupportTicket(null);
     }
 }

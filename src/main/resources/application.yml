@@ -1,4 +1,12 @@
 spring:
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+  thymeleaf:
+    cache: false
+    prefix: file:src/main/resources/templates/
   datasource:
     url: jdbc:mysql://localhost:3306/daily_report?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
     username: root
@@ -11,14 +19,37 @@ spring:
       hibernate:
         format_sql: true
     open-in-view: false
-  thymeleaf:
-    cache: false
+  web:
+    resources:
+      cache:
+        period: 0
+      chain:
+        cache: false
   batch:
     jdbc:
       initialize-schema: always
+  mail:
+    host: smtp.example.com
+    port: 587
+    username: your_email@example.com
+    password: your_password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          timeout: 5000
+          connectiontimeout: 5000
+          writetimeout: 5000
 
 file:
   upload-dir: uploads
+
+app:
+  mail:
+    enabled: false
+    from: no-reply@example.com
 
 logging:
   level:

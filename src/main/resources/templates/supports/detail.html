@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>문의 상세</title>
+    <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <div class="brand">Request Detail</div>
+        <nav class="nav">
+            <a href="/dashboard">대시보드</a>
+            <a href="/supports">문의 관리</a>
+            <a href="/users">담당자 관리</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <div class="inline" style="justify-content: space-between;">
+                <div>
+                    <div class="section-title">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 3h6M9 3v4M15 3v4M6 7h12v13H6z"/>
+                        </svg>
+                        문의 상세
+                    </div>
+                    <span class="status"
+                          th:classappend="${ticket.status.name() == 'RECEIVED' ? ' new' : (ticket.status.name() == 'IN_PROGRESS' ? ' in-progress' : ' processed')}"
+                          th:text="${ticket.status.name() == 'RECEIVED' ? '접수' : (ticket.status.name() == 'IN_PROGRESS' ? '처리중' : '완료')}">
+                    </span>
+                </div>
+                <div class="actions">
+                    <a class="button secondary" th:href="@{/supports/{id}/edit(id=${ticket.id})}">수정</a>
+                    <form th:action="@{/supports/{id}/delete(id=${ticket.id})}" method="post">
+                        <button class="button" type="submit">삭제</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 16px; box-shadow: none;">
+                <p><strong>문의 제목:</strong> <span th:text="${ticket.title}"></span></p>
+                <p><strong>문의 내용:</strong></p>
+                <p th:text="${ticket.content}"></p>
+                <p><strong>문의 유형:</strong> <span th:text="${ticket.inquiryType != null ? ticket.inquiryType : '-'}"></span></p>
+                <p><strong>카테고리:</strong> <span th:text="${ticket.category != null ? ticket.category : '-'}"></span></p>
+                <p><strong>우선순위:</strong> <span th:text="${ticket.priority != null ? ticket.priority : '-'}"></span></p>
+                <p><strong>담당자:</strong>
+                    <span class="tag" th:text="${ticket.user != null ? ticket.user.name : '-'}"></span>
+                    <span class="tag" th:text="${ticket.user != null ? ticket.user.email : '-'}"></span>
+                </p>
+                <p><strong>등록일:</strong> <span th:text="${ticket.createdAt}"></span></p>
+                <p><strong>처리일:</strong> <span th:text="${ticket.processedAt}"></span></p>
+            </div>
+        </section>
+
+        <section class="card" style="margin-top: 24px;">
+            <div class="section-title">처리 상태 변경</div>
+            <form class="inline" th:action="@{/supports/{id}/status(id=${ticket.id})}" method="post">
+                <select name="status">
+                    <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.name() == 'RECEIVED' ? '접수' : (s.name() == 'IN_PROGRESS' ? '처리중' : '완료')}" th:selected="${s == ticket.status}"></option>
+                </select>
+                <button class="button" type="submit">변경</button>
+            </form>
+        </section>
+
+        <section class="card" style="margin-top: 24px;">
+            <div class="section-title">첨부 파일</div>
+            <ul>
+                <li th:each="f : ${ticket.files}">
+                    <a th:href="@{/supports/files/{id}(id=${f.id})}" th:text="${f.originalName}"></a>
+                </li>
+            </ul>
+            <form class="inline" th:action="@{/supports/{id}/files(id=${ticket.id})}" method="post" enctype="multipart/form-data">
+                <input type="file" name="files" multiple />
+                <button class="button" type="submit">파일 추가</button>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

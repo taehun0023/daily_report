@@ -10,8 +10,8 @@ public class RequestFile {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "request_item_id", nullable = false)
-    private RequestItem requestItem;
+    @JoinColumn(name = "support_ticket_id", nullable = false)
+    private SupportTicket supportTicket;
 
     @Column(nullable = false)
     private String originalName;
@@ -29,12 +29,12 @@ public class RequestFile {
         return id;
     }
 
-    public RequestItem getRequestItem() {
-        return requestItem;
+    public SupportTicket getSupportTicket() {
+        return supportTicket;
     }
 
-    public void setRequestItem(RequestItem requestItem) {
-        this.requestItem = requestItem;
+    public void setSupportTicket(SupportTicket supportTicket) {
+        this.supportTicket = supportTicket;
     }
 
     public String getOriginalName() {

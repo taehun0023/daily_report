@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>문의 목록</title>
+    <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <div class="brand">Support Desk</div>
+        <nav class="nav">
+            <a href="/dashboard">대시보드</a>
+            <a href="/supports">문의 관리</a>
+            <a href="/users">담당자 관리</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <div class="inline" style="justify-content: space-between;">
+                <div>
+                    <div class="section-title">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 7h16M4 12h16M4 17h16"/>
+                        </svg>
+                        문의 목록
+                    </div>
+                    <p>등록된 티켓을 확인하고 처리 상태를 관리하세요.</p>
+                </div>
+                <div class="actions">
+                    <a class="button" href="/supports/new">새 티켓</a>
+                </div>
+            </div>
+
+            <form class="filter-bar" method="get" action="/supports">
+                <div class="field">
+                    <label>처리 상태</label>
+                    <select name="status">
+                        <option value="" th:selected="${status == null}">전체</option>
+                        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.name() == 'RECEIVED' ? '접수' : (s.name() == 'IN_PROGRESS' ? '처리중' : '완료')}" th:selected="${status == s}"></option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>문의 유형</label>
+                    <input type="text" name="inquiryType" th:value="${inquiryType}" placeholder="예: 로그인/결제" />
+                </div>
+                <div class="field">
+                    <label>카테고리</label>
+                    <input type="text" name="category" th:value="${category}" placeholder="예: 계정/결제" />
+                </div>
+                <div class="field">
+                    <label>담당자</label>
+                    <select name="userId">
+                        <option value="" th:selected="${userId == null}">전체</option>
+                        <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.name + ' (' + u.email + ')'}" th:selected="${userId != null and userId == u.id}"></option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>시작일</label>
+                    <input type="date" name="fromDate" th:value="${fromDate}" />
+                </div>
+                <div class="field">
+                    <label>종료일</label>
+                    <input type="date" name="toDate" th:value="${toDate}" />
+                </div>
+                <div class="filter-actions" style="grid-column: 1 / -1;">
+                    <button class="button" type="submit">검색</button>
+                    <a class="button secondary" href="/supports">초기화</a>
+                </div>
+            </form>
+
+            <div class="toast-floating">
+                <div th:if="${param.updated}" class="toast toast-box" id="statusToast">
+                    <span>처리 상태가 업데이트되었습니다.</span>
+                    <button type="button" onclick="this.closest('.toast').style.display='none'">닫기</button>
+                </div>
+                <div th:if="${param.cleared}" class="toast toast-box" id="clearedToast">
+                    <span>필터가 해제되었습니다.</span>
+                    <button type="button" onclick="this.closest('.toast').style.display='none'">닫기</button>
+                </div>
+            </div>
+
+            <div class="filter-summary"
+                 th:if="${status != null or userId != null or fromDate != null or toDate != null}"
+                 th:with="selectedUser=${userId != null ? users.?[id == userId][0] : null}">
+                <a class="tag" th:if="${status != null}"
+                   data-tooltip="클릭 시 해제"
+                   th:href="@{/supports(userId=${userId}, inquiryType=${inquiryType}, category=${category}, fromDate=${fromDate}, toDate=${toDate}, cleared=true)}">
+                    <span th:text="${'처리 상태=' + (status.name() == 'RECEIVED' ? '접수' : (status.name() == 'IN_PROGRESS' ? '처리중' : '완료'))}"></span><span class="x">×</span>
+                </a>
+                <a class="tag" th:if="${selectedUser != null}"
+                   data-tooltip="클릭 시 해제"
+                   th:href="@{/supports(status=${status}, inquiryType=${inquiryType}, category=${category}, fromDate=${fromDate}, toDate=${toDate}, cleared=true)}">
+                    <span th:text="${'담당자=' + selectedUser.name}"></span><span class="x">×</span>
+                </a>
+                <a class="tag" th:if="${inquiryType != null}" data-tooltip="클릭 시 해제" th:href="@{/supports(status=${status}, userId=${userId}, category=${category}, fromDate=${fromDate}, toDate=${toDate}, cleared=true)}"><span th:text="${'문의 유형=' + inquiryType}"></span><span class="x">×</span></a>
+                <a class="tag" th:if="${category != null}" data-tooltip="클릭 시 해제" th:href="@{/supports(status=${status}, userId=${userId}, inquiryType=${inquiryType}, fromDate=${fromDate}, toDate=${toDate}, cleared=true)}"><span th:text="${'카테고리=' + category}"></span><span class="x">×</span></a>
+                <a class="tag" th:if="${fromDate != null or toDate != null}"
+                   data-tooltip="클릭 시 해제"
+                   th:href="@{/supports(status=${status}, userId=${userId}, inquiryType=${inquiryType}, category=${category}, cleared=true)}">
+                    <span th:text="${'기간=' + (fromDate != null ? fromDate : '시작없음') + ' ~ ' + (toDate != null ? toDate : '끝없음')}"></span><span class="x">×</span>
+                </a>
+            </div>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>문의 제목</th>
+                    <th>처리 상태</th>
+                    <th>담당자</th>
+                    <th>유형</th>
+                    <th>카테고리</th>
+                    <th>우선순위</th>
+                    <th>등록일</th>
+                    <th>빠른 변경</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${tickets}">
+                    <td th:text="${item.id}"></td>
+                    <td><a th:href="@{/supports/{id}(id=${item.id})}" th:text="${item.title}"></a></td>
+                    <td>
+                        <span class="status"
+                              th:classappend="${item.status.name() == 'RECEIVED' ? ' new' : (item.status.name() == 'IN_PROGRESS' ? ' in-progress' : ' processed')}"
+                              th:text="${item.status.name() == 'RECEIVED' ? '접수' : (item.status.name() == 'IN_PROGRESS' ? '처리중' : '완료')}">
+                        </span>
+                    </td>
+                    <td>
+                        <span class="tag" th:text="${item.user != null ? item.user.name : '-'}"></span>
+                        <span class="tag" th:text="${item.user != null ? item.user.email : '-'}"></span>
+                    </td>
+                    <td th:text="${item.inquiryType != null ? item.inquiryType : '-'}"></td>
+                    <td th:text="${item.category != null ? item.category : '-'}"></td>
+                    <td th:text="${item.priority != null ? item.priority : '-'}"></td>
+                    <td th:text="${item.createdAt}"></td>
+                    <td>
+                        <div class="inline">
+                            <form th:action="@{/supports/{id}/status(id=${item.id})}" method="post">
+                                <input type="hidden" name="status" value="RECEIVED" />
+                                <input type="hidden" name="redirectTo" value="list" />
+                                <button class="status-button" type="submit">
+                                    <span class="status new">접수</span>
+                                </button>
+                            </form>
+                            <form th:action="@{/supports/{id}/status(id=${item.id})}" method="post">
+                                <input type="hidden" name="status" value="IN_PROGRESS" />
+                                <input type="hidden" name="redirectTo" value="list" />
+                                <button class="status-button" type="submit">
+                                    <span class="status in-progress">처리중</span>
+                                </button>
+                            </form>
+                            <form th:action="@{/supports/{id}/status(id=${item.id})}" method="post">
+                                <input type="hidden" name="status" value="DONE" />
+                                <input type="hidden" name="redirectTo" value="list" />
+                                <button class="status-button" type="submit">
+                                    <span class="status processed">완료</span>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(tickets)}">
+                    <td colspan="6">
+                        <div class="empty-state">조건에 맞는 티켓이 없습니다.</div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+
+<script>
+  const toastBoxes = document.querySelectorAll('.toast');
+  toastBoxes.forEach((box, idx) => {
+    if (idx >= 3) {
+      box.style.display = 'none';
+      return;
+    }
+    setTimeout(() => {
+      box.style.display = 'none';
+    }, 3000);
+  });
+  document.addEventListener('click', (event) => {
+    const toast = event.target.closest('.toast');
+    if (toast) {
+      toast.style.display = 'none';
+    }
+  });
+
+  document.querySelectorAll('[data-tooltip]').forEach((el) => {
+    el.addEventListener('mouseenter', () => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < 60) {
+        el.classList.add('tooltip-bottom');
+      }
+    });
+    el.addEventListener('mouseleave', () => {
+      el.classList.remove('tooltip-bottom');
+    });
+  });
+</script>
+</body>
+</html>

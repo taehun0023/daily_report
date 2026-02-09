@@ -3,27 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>알림 목록</title>
+    <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-<h1>알림 목록</h1>
-<p>사용자: <span th:text="${userEmail}"></span></p>
-<nav>
-    <a href="/dashboard">대시보드</a>
-</nav>
+<div class="page">
+    <header class="header">
+        <div class="brand">Notification Feed</div>
+        <nav class="nav">
+            <a href="/dashboard">대시보드</a>
+            <a href="/supports">문의 관리</a>
+            <a href="/users">사용자 관리</a>
+        </nav>
+    </header>
 
-<table border="1" cellpadding="8" cellspacing="0">
-    <thead>
-    <tr>
-        <th>발송 시간</th>
-        <th>메시지</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="n : ${notifications}">
-        <td th:text="${n.sentAt}"></td>
-        <td th:text="${n.message}"></td>
-    </tr>
-    </tbody>
-</table>
+    <main class="container">
+        <section class="card">
+            <div class="section-title">알림 목록</div>
+            <p>사용자: <span th:text="${user != null ? user.name + ' (' + user.email + ')' : userId}"></span></p>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>발송 시간</th>
+                    <th>메시지</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="n : ${notifications}">
+                    <td th:text="${n.sentAt}"></td>
+                    <td th:text="${n.message}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
 </body>
 </html>
